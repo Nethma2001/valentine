@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Click Me ❤️</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family: 'Segoe UI', sans-serif;
+      color: #5a0f2e;
+    }
+
+    .card {
+      background: #fff;
+      padding: 30px 24px 36px;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.15);
+      text-align: center;
+      width: min(92vw, 420px);
+    }
+
+    h1 { margin: 0 0 10px; }
+    p { margin: 10px 0 18px; }
+
+    .btn {
+      border: none;
+      padding: 12px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,.15);
+      transition: transform .25s ease;
+    }
+
+    .primary {
+      background: #ff4d6d;
+      color: #fff;
+    }
+
+    .secondary {
+      background: #e9e9e9;
+      color: #333;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .yes {
+      width: 120px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hidden { display: none; }
+
+    /* Teddy section */
+    .teddies {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .teddies img {
+      width: 70px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Hearts */
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 18px;
+      animation: floatUp 3s linear forwards;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-120vh) scale(1.6); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- STEP 1 -->
+  <div class="card" id="step1">
+    <h1>Hey <span id="name1"></span> 👀</h1>
+    <p>Tap the button below</p>
+    <button class="btn primary" onclick="goStep2()">Click Me</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card hidden" id="step2">
+    <h1><span id="name2"></span>, will you be my Valentine? 💌</h1>
+
+    <div class="teddies">
+      <img src="images.jpeg">
+      <img src="download.jpeg">
+    </div>
+
+    <p id="countdown"></p>
+    <p id="noText">Think carefully 😌</p>
+
+    <div class="actions">
+      <button class="btn primary yes" id="yesBtn" onclick="sayYes()">YES ❤️</button>
+      <button class="btn secondary" id="noBtn" onclick="pressNo()">NO 🙃</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card hidden" id="step3">
+    <h1>🥰 Yayyy <span id="name3"></span>!</h1>
+    <p>I knew you’d say yes 💖</p>
+    <p>
+      You’re my favorite person,<br>
+      my calm and my chaos,<br>
+      my today and every tomorrow.
+    </p>
+    <p>Happy Valentine’s Day 🥰💕</p>
+  </div>
+
+  <div class="hearts" id="hearts"></div>
+
+  <script>
+    /* CONFIG */
+    const BOYFRIEND_NAME = "My Darling Hubby 🥰"; // ✏️ change name here
+    const VALENTINE_DATE = new Date(new Date().getFullYear(), 1, 14);
+
+    /* ELEMENTS */
+    const music = document.getElementById("bgMusic");
+    const noBtn = document.getElementById("noBtn");
+
+    music.volume = 0.4;
+
+    document.getElementById("name1").textContent = BOYFRIEND_NAME;
+    document.getElementById("name2").textContent = BOYFRIEND_NAME;
+    document.getElementById("name3").textContent = BOYFRIEND_NAME;
+
+    /* COUNTDOWN */
+    function updateCountdown() {
+      const diff = VALENTINE_DATE - new Date();
+      const cd = document.getElementById("countdown");
+
+      if (diff <= 0) {
+        cd.textContent = "It's Valentine’s Day 💘";
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      cd.textContent = `⏳ ${d} days ${h} hrs ${m} mins to Valentine’s Day`;
+    }
+    setInterval(updateCountdown, 60000);
+    updateCountdown();
+
+    /* NO BUTTON LOGIC */
+    let noCount = 0;
+    const noMessages = [
+      "Are you sure? 🤨",
+      "Really sure? 😅",
+      "100% sure? 😳",
+      "I don't think so... 😏",
+      "Are you absolutely sure? 😬",
+      "Last chance! 😌",
+      "Okay… you have no choice 😏",
+      "Think again! 😉",
+      "No second chances! 😈",
+      "No more NOs! 😇"
+
+    ];
+
+    function pressNo() {
+      noCount++;
+      const yesBtn = document.getElementById("yesBtn");
+      document.getElementById("noText").textContent =
+        noMessages[Math.min(noCount - 1, noMessages.length - 1)];
+
+      yesBtn.style.transform = `scale(${1 + noCount * 0.35})`;
+
+      if (noCount >= 4) {
+        noBtn.style.display = "none"; // NO disappears 😈
+      }
+    }
+
+    /* STEP CONTROLS */
+    function goStep2() {
+      music.play();
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+    }
+
+    function sayYes() {
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("step3").classList.remove("hidden");
+      burstHearts();
+    }
+
+    function burstHearts() {
+      const container = document.getElementById("hearts");
+      for (let i = 0; i < 40; i++) {
+        const h = document.createElement("span");
+        h.className = "heart";
+        h.textContent = "❤️";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.bottom = "-20px";
+        h.style.animationDuration = 2 + Math.random() * 2 + "s";
+        container.appendChild(h);
+        setTimeout(() => h.remove(), 4000);
+      }
+    }
+  </script>
+
+</body>
+</html>
